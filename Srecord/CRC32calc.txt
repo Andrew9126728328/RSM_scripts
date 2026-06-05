@@ -1,0 +1,16 @@
+# srec_cat command file to add the CRC and produce application file to be flashed
+# Usage: srec_cat @filename
+
+#first: create CRC checksum
+RSM_ITELMA_TC2xx.hex                # input file
+-fill 0x00 0x80020000 0x80048000      # fill code area with 0xff
+-crop 0x80000000 0x800FFFFC           # just keep code area for CRC calculation below (CRC will be at 0x1FFFE..0x1FFFF)
+-CRC32_Little_Endian 0x800FFFFC -CCITT   # calculate big endian CCITT CRC16 at given address.
+#-crop 0x800FFFFC 0x80100000           # keep the CRC itself
+#Version.hex
+#-crop 0x800FFF8C 0x800FFFFC
+#CU.hex                			   # input file
+#-crop 0x80000000 0x80100000
+-Output_Block_Size=16
+-Output                         # produce output
+RSM_ITELMA_TC2xx.hex                         # '-' is special 'file': use console output
